@@ -1,7 +1,33 @@
-<div class="month-view">  
-	<div class="day-container" *ngFor="let day of currentMonth; let i = index">
-		<div [ngClass]="getClass(day)" (click)="select(i)">
-    		{{day.date.getDate()}}
+<div class="datepicker-container">
+	<div class="calendar-header">
+			<div>
+				<button mat-button>DEC 2018</button>
+			</div>
+			<div>
+				<button mat-icon-button>
+					<mat-icon>chevron_left</mat-icon>
+				</button>
+				<button mat-icon-button>
+					<mat-icon>chevron_right</mat-icon>
+				</button>
+			</div>
+		</div>
+		<div class="week-names">
+					m t o t f l s
+		</div>
+	<div class="calendar-container">
+	<div class="main-calendar">
+		<div class="week-numbers">
+			<div class="week-number" *ngFor="let weekNumber of weekNumbers">
+				{{weekNumber}}
+			</div>
+		</div>
+		<div class="month-view">  
+			<div class="day-container" *ngFor="let day of currentMonth; let i = index">
+				<div [ngClass]="getClass(day)" (click)="select(i)">
+					{{day.date.getDate()}}
+				</div>
+			</div>
 		</div>
 	</div>
 </div>

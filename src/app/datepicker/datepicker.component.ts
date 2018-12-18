@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import {
 	startOfMonth,
 	endOfMonth,
-	eachDay
+	eachDay,
+	isToday
 } from 'date-fns';
 import { DatepickerOptions } from '../models/datepicker-options';
 import { Day } from '../models/day';
@@ -13,10 +14,10 @@ import { Day } from '../models/day';
 	styleUrls: ['./datepicker.component.less']
 })
 export class DatepickerComponent implements OnInit {
-
 	public currentMonth = new Array<Day>();
 	// Index of currently selected date
 	public selectedDay: number;
+	public weekNumbers = ['1', '2', '3', '4', '5', '6'];
 
 	public options = new DatepickerOptions({
 		enableDateRange: true
@@ -30,11 +31,14 @@ export class DatepickerComponent implements OnInit {
 
 	public update() {
 		// start and end should be for input date
+		const today = new Date();
+		console.log(today);
 		const start = startOfMonth(new Date());
 		const end = endOfMonth(new Date());
 		this.currentMonth = eachDay(start, end).map((date) => {
 			return new Day({
-				date: date
+				date: date,
+				isToday: isToday(date)
 			});
 		});
 	}
@@ -52,6 +56,11 @@ export class DatepickerComponent implements OnInit {
 		if (day.isSelected) {
 			return 'day selected';
 		}
+
+		if (day.isToday) {
+			return 'day today';
+		}
+
 		return 'day';
 	}
 }
