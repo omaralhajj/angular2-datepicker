@@ -6,9 +6,11 @@ import {
 	isToday,
 	getDay,
 	subDays,
-	isThisMonth,
 	addMonths,
-	subMonths
+	subMonths,
+	getDayOfYear,
+	startOfYear,
+	addWeeks
 } from 'date-fns';
 import { DatepickerOptions } from '../models/datepicker-options';
 import { Day } from '../models/day';
@@ -20,16 +22,6 @@ import { Day } from '../models/day';
 })
 export class DatepickerComponent implements OnInit {
 	private internalDate;
-
-	dayLabels = [
-		'Sun',
-		'Mon',
-		'Tue',
-		'Wed',
-		'Thu',
-		'Fri',
-		'Sat'
-	];
 
 	@Input()
 	public get date() {
@@ -44,7 +36,7 @@ export class DatepickerComponent implements OnInit {
 	public calendar = new Array<Day>();
 	public selectedDay: number;
 	public buttonText = 'DEC 2018';
-	public weekNumbers = ['1', '2', '3', '4', '5', '6'];
+	public weekNumbers = new Array<string>();
 
 	constructor() { }
 
@@ -52,7 +44,9 @@ export class DatepickerComponent implements OnInit {
 		this.update();
 	}
 
-	public update() {
+	public update(): void {
+		this.weekNumbers.length = 0;
+
 		const start = startOfMonth(this.date);
 		const end = endOfMonth(this.date);
 
@@ -65,6 +59,7 @@ export class DatepickerComponent implements OnInit {
 				isThisMonth: false
 			}));
 		}
+		prevMonth.reverse();
 
 		let currentMonth = [];
 		currentMonth = eachDay(start, end).map((date) => {
@@ -74,10 +69,17 @@ export class DatepickerComponent implements OnInit {
 				isThisMonth: true
 			});
 		});
+
 		this.calendar = prevMonth.concat(currentMonth);
+
+		for (let i = 0; i < (this.calendar.length / 7); i++) {
+			const week = addWeeks(start, i);
+			this.weekNumbers.push(this.getWeekNumber(week));
+		}
+
 	}
 
-	public select(i: number) {
+	public select(i: number): void {
 		// unselect
 		if (this.selectedDay !== undefined) {
 			this.calendar[this.selectedDay].isSelected = false;
@@ -102,17 +104,29 @@ export class DatepickerComponent implements OnInit {
 		return 'day';
 	}
 
-	close() {
+	close(): void {
 		console.log('closing');
 	}
 
-	nextMonth() {
+	nextMonth(): void {
 		this.date = addMonths(this.date, 1);
 		this.update();
 	}
 
-	previousMonth() {
+	previousMonth(): void {
 		this.date = subMonths(this.date, 1);
 		this.update();
+	}
+
+	getWeekNumber(date: Date): string {
+		const dayOfYear = getDayOfYear(date);
+		const dayOfWeek = getDay(date);
+		const dayOfWeekJanFirst = getDay(startOfYear(date));
+		let weekNumber = ((dayOfYear + 6) / 7);
+		if (dayOfWeek < dayOfWeekJanFirst) {
+			weekNumber += 1;
+		}
+		console.log(weekNumber);
+		return weekNumber.toFixed(0);
 	}
 }
