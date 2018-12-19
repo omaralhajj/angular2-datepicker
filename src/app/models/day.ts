@@ -4,10 +4,10 @@ export class Day {
 	day: number;
 	month: number;
 	year: number;
-	isInCurrentMonth: boolean;
+	isThisMonth: boolean;
 	isToday: boolean;
 	isSelected: boolean;
-	isSelectable: boolean;
+	disabled: boolean;
 
 	constructor(options: Partial<Day>) {
 		if (options) {

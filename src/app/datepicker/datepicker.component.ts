@@ -1,9 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import {
 	startOfMonth,
 	endOfMonth,
 	eachDay,
-	isToday
+	isToday,
+	getDay,
+	subDays,
+	isThisMonth,
+	addMonths,
+	subMonths
 } from 'date-fns';
 import { DatepickerOptions } from '../models/datepicker-options';
 import { Day } from '../models/day';
@@ -14,14 +19,32 @@ import { Day } from '../models/day';
 	styleUrls: ['./datepicker.component.less']
 })
 export class DatepickerComponent implements OnInit {
-	public currentMonth = new Array<Day>();
-	// Index of currently selected date
-	public selectedDay: number;
-	public weekNumbers = ['1', '2', '3', '4', '5', '6'];
+	private internalDate;
 
-	public options = new DatepickerOptions({
-		enableDateRange: true
-	});
+	dayLabels = [
+		'Sun',
+		'Mon',
+		'Tue',
+		'Wed',
+		'Thu',
+		'Fri',
+		'Sat'
+	];
+
+	@Input()
+	public get date() {
+		return this.internalDate;
+	}
+	public set date(value) {
+		this.internalDate = value;
+	}
+
+	@Input() options = new DatepickerOptions();
+
+	public calendar = new Array<Day>();
+	public selectedDay: number;
+	public buttonText = 'DEC 2018';
+	public weekNumbers = ['1', '2', '3', '4', '5', '6'];
 
 	constructor() { }
 
@@ -30,29 +53,40 @@ export class DatepickerComponent implements OnInit {
 	}
 
 	public update() {
-		// start and end should be for input date
-		const today = new Date();
-		console.log(today);
-		const start = startOfMonth(new Date());
-		const end = endOfMonth(new Date());
-		this.currentMonth = eachDay(start, end).map((date) => {
+		const start = startOfMonth(this.date);
+		const end = endOfMonth(this.date);
+
+		const prevMonth = [];
+		for (let i = 1; i <= getDay(start); i++) {
+			const date = subDays(start, i);
+			prevMonth.push(new Day({
+				date: date,
+				isToday: isToday(date),
+				isThisMonth: false
+			}));
+		}
+
+		let currentMonth = [];
+		currentMonth = eachDay(start, end).map((date) => {
 			return new Day({
 				date: date,
-				isToday: isToday(date)
+				isToday: isToday(date),
+				isThisMonth: true
 			});
 		});
+		this.calendar = prevMonth.concat(currentMonth);
 	}
 
 	public select(i: number) {
 		// unselect
 		if (this.selectedDay !== undefined) {
-			this.currentMonth[this.selectedDay].isSelected = false;
+			this.calendar[this.selectedDay].isSelected = false;
 		}
-		this.currentMonth[i].isSelected = true;
+		this.calendar[i].isSelected = true;
 		this.selectedDay = i;
 	}
 
-	public getClass(day: Day): string {
+	public getCssClass(day: Day): string {
 		if (day.isSelected) {
 			return 'day selected';
 		}
@@ -61,6 +95,24 @@ export class DatepickerComponent implements OnInit {
 			return 'day today';
 		}
 
+		if (!day.isThisMonth) {
+			return 'day not-in-month';
+		}
+
 		return 'day';
+	}
+
+	close() {
+		console.log('closing');
+	}
+
+	nextMonth() {
+		this.date = addMonths(this.date, 1);
+		this.update();
+	}
+
+	previousMonth() {
+		this.date = subMonths(this.date, 1);
+		this.update();
 	}
 }

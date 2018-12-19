@@ -1,3 +1,5 @@
+import { DayLabels } from './day-labels';
+
 export class DatepickerOptions {
 	enableDateRange = false;
 	showTodayButton = true;
@@ -5,7 +7,7 @@ export class DatepickerOptions {
 	maxYear: number | string = 2099;
 	// dateFormat = 'dd-mm-yyyy';
 
-	constructor(options: Partial<DatepickerOptions>) {
+	constructor(options?: Partial<DatepickerOptions>) {
 		if (options) {
 			Object.assign(this, options);
 		}

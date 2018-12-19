@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { DatepickerComponent } from './datepicker.component';
 import { CommonModule } from '@angular/common';
-import { MatIconModule, MatButtonModule } from '@angular/material';
+import { MatIconModule, MatButtonModule, MatDividerModule } from '@angular/material';
 
 @NgModule({
 	declarations: [
@@ -10,7 +10,8 @@ import { MatIconModule, MatButtonModule } from '@angular/material';
 	imports: [
 		CommonModule,
 		MatIconModule,
-		MatButtonModule
+		MatButtonModule,
+		MatDividerModule
 	],
 	exports: [DatepickerComponent]
 })
