@@ -28,7 +28,7 @@
 				</div>
 				<div class="month-view">  
 					<div class="day-container" *ngFor="let day of calendar; let i = index">
-						<div [ngClass]="getCssClass(day)" (click)="select(i)">
+						<div [ngClass]="getCssClass(day)" (click)="select(day.id, day)">
 							{{day.date.getDate()}}
 						</div>
 					</div>

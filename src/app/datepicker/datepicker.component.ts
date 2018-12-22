@@ -10,10 +10,15 @@ import {
 	subMonths,
 	getDayOfYear,
 	startOfYear,
-	addWeeks
+	addWeeks,
+	isEqual,
+	format,
+	getMonth,
+	getYear,
+	addDays
 } from 'date-fns';
 import { DatepickerOptions } from '../models/datepicker-options';
-import { Day } from '../models/day';
+import { Day, Month } from '../models/day';
 
 @Component({
 	selector: 'app-datepicker',
@@ -34,8 +39,8 @@ export class DatepickerComponent implements OnInit {
 	@Input() options = new DatepickerOptions();
 
 	public calendar = new Array<Day>();
-	public selectedDay: number;
-	public buttonText = 'DEC 2018';
+	public selectedDateId: string;
+	public buttonText: string;
 	public weekNumbers = new Array<string>();
 
 	constructor() { }
@@ -47,6 +52,8 @@ export class DatepickerComponent implements OnInit {
 	public update(): void {
 		this.weekNumbers.length = 0;
 
+		this.setButtonText();
+
 		const start = startOfMonth(this.date);
 		const end = endOfMonth(this.date);
 
@@ -56,52 +63,55 @@ export class DatepickerComponent implements OnInit {
 			prevMonth.push(new Day({
 				date: date,
 				isToday: isToday(date),
-				isThisMonth: false
+				isThisMonth: false,
+				id: getYear(date).toString() + getDayOfYear(date).toString(),
+				month: Month.Previous
 			}));
 		}
 		prevMonth.reverse();
+
+		const nextMonth = [];
+		for (let i = 1; i < 7 - getDay(end); i++) {
+			const date = addDays(end, i);
+			nextMonth.push(new Day({
+				date: date,
+				isToday: isToday(date),
+				isThisMonth: false,
+				id: getYear(date).toString() + getDayOfYear(date).toString(),
+				month: Month.Next
+			}));
+		}
 
 		let currentMonth = [];
 		currentMonth = eachDay(start, end).map((date) => {
 			return new Day({
 				date: date,
 				isToday: isToday(date),
-				isThisMonth: true
+				isThisMonth: true,
+				id: getYear(date).toString() + getDayOfYear(date).toString(),
+				month: Month.Current
 			});
 		});
 
-		this.calendar = prevMonth.concat(currentMonth);
+		this.calendar = prevMonth.concat(currentMonth).concat(nextMonth);
 
 		for (let i = 0; i < (this.calendar.length / 7); i++) {
 			const week = addWeeks(start, i);
 			this.weekNumbers.push(this.getWeekNumber(week));
 		}
 
+		this.select(this.selectedDateId);
 	}
 
-	public select(i: number): void {
-		// unselect
-		if (this.selectedDay !== undefined) {
-			this.calendar[this.selectedDay].isSelected = false;
-		}
-		this.calendar[i].isSelected = true;
-		this.selectedDay = i;
-	}
-
-	public getCssClass(day: Day): string {
-		if (day.isSelected) {
-			return 'day selected';
-		}
-
-		if (day.isToday) {
-			return 'day today';
-		}
-
-		if (!day.isThisMonth) {
-			return 'day not-in-month';
-		}
-
-		return 'day';
+	public select(id: string, day?: Day): void {
+		this.calendar.forEach((item) => {
+				if (item.id === id) {
+					day.isSelected = true;
+				} else {
+					item.isSelected = false;
+				}
+			});
+		this.selectedDateId = id;
 	}
 
 	close(): void {
@@ -126,7 +136,31 @@ export class DatepickerComponent implements OnInit {
 		if (dayOfWeek < dayOfWeekJanFirst) {
 			weekNumber += 1;
 		}
-		console.log(weekNumber);
 		return weekNumber.toFixed(0);
+	}
+
+	setButtonText() {
+		const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+		this.buttonText = `${months[this.date.getMonth()]} ${this.date.getFullYear()}`;
+	}
+
+	public getCssClass(day: Day): string {
+		if (day.isSelected && day.isToday) {
+			return 'day today-selected';
+		}
+
+		if (day.isSelected) {
+			return 'day selected';
+		}
+
+		if (day.isToday) {
+			return 'day today';
+		}
+
+		if (!day.isThisMonth) {
+			return 'day not-in-month';
+		}
+
+		return 'day';
 	}
 }

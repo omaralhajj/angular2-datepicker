@@ -1,5 +1,3 @@
-import { DayLabels } from './day-labels';
-
 export class DatepickerOptions {
 	enableDateRange = false;
 	showTodayButton = true;
