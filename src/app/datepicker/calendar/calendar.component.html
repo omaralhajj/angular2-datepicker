@@ -1,0 +1,40 @@
+<div class="calendar-header">
+	<div class="controls">
+		<button mat-button>
+			{{buttonText}}
+			<mat-icon>arrow_drop_down</mat-icon>
+		</button>
+		<div class="spacer"></div>
+		<button mat-icon-button (click)="previousMonth()">
+			<mat-icon>chevron_left</mat-icon>
+		</button>
+		<button mat-icon-button (click)="nextMonth()">
+			<mat-icon>chevron_right</mat-icon>
+		</button>
+	</div>
+</div>
+<div class="week-names">
+	<div class="week-spacer">
+		Week
+	</div>
+	<div class="week-name" *ngFor="let name of weekName">
+		{{name}}
+	</div>
+</div>
+<mat-divider class="header-divider"></mat-divider>
+<div class="calendar-container">
+	<div class="main-calendar">
+		<div class="week-numbers">
+			<div class="week-number" *ngFor="let weekNumber of weekNumbers">
+				{{weekNumber}}
+			</div>
+		</div>
+		<div class="month-view">
+			<div class="day-container" *ngFor="let day of calendar">
+				<div [ngClass]="getCssClass(day)" (click)="select(day.id, day)">
+					{{day.date.getDate()}}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

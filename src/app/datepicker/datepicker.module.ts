@@ -1,7 +1,9 @@
 import { NgModule } from '@angular/core';
-import { DatepickerComponent } from './datepicker.component';
+import { CalendarComponent } from './calendar/calendar.component';
 import { CommonModule } from '@angular/common';
 import { MatIconModule, MatButtonModule, MatDividerModule } from '@angular/material';
+import { DatepickerComponent } from './datepicker.component';
+import { CalendarModule } from './calendar/calendar.module';
 
 @NgModule({
 	declarations: [
@@ -9,9 +11,7 @@ import { MatIconModule, MatButtonModule, MatDividerModule } from '@angular/mater
 	],
 	imports: [
 		CommonModule,
-		MatIconModule,
-		MatButtonModule,
-		MatDividerModule
+		CalendarModule
 	],
 	exports: [DatepickerComponent]
 })

@@ -5,14 +5,14 @@ import { AppComponent } from './app.component';
 import { DatepickerModule } from './datepicker/datepicker.module';
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
-  imports: [
-    BrowserModule,
-    DatepickerModule
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
+	declarations: [
+		AppComponent
+	],
+	imports: [
+		BrowserModule,
+		DatepickerModule
+	],
+	providers: [],
+	bootstrap: [AppComponent]
 })
 export class AppModule { }
