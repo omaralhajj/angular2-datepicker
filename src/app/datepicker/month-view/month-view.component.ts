@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import {
 	startOfMonth,
 	endOfMonth,
@@ -15,15 +15,17 @@ import {
 	addDays
 } from 'date-fns';
 import { DatepickerOptions } from '../../models/datepicker-options';
-import { Day, Month } from '../../models/day';
+import { Day } from '../../models/day';
+import { Month, CurrentView } from 'src/app/models/enums';
 
 @Component({
-	selector: 'app-calendar',
-	templateUrl: './calendar.component.html',
-	styleUrls: ['./calendar.component.less']
+	selector: 'app-month-view',
+	templateUrl: './month-view.component.html',
+	styleUrls: ['./month-view.component.less']
 })
-export class CalendarComponent implements OnInit {
-	private internalDate;
+export class MonthViewComponent implements OnInit {
+	private internalDate: Date;
+	public selectedDate: Date;
 
 	@Input()
 	public get date() {
@@ -42,10 +44,11 @@ export class CalendarComponent implements OnInit {
 
 	weekName = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
+	@Output() yearButtonClick = new EventEmitter();
+
 	constructor() { }
 
 	ngOnInit() {
-		this.date = new Date();
 		this.update();
 	}
 
@@ -65,6 +68,7 @@ export class CalendarComponent implements OnInit {
 				isToday: isToday(date),
 				isThisMonth: false,
 				id: getYear(date).toString() + getDayOfYear(date).toString(),
+				day: date.getDate(),
 				month: Month.Previous
 			}));
 		}
@@ -78,6 +82,7 @@ export class CalendarComponent implements OnInit {
 				isToday: isToday(date),
 				isThisMonth: false,
 				id: getYear(date).toString() + getDayOfYear(date).toString(),
+				day: date.getDate(),
 				month: Month.Next
 			}));
 		}
@@ -89,6 +94,7 @@ export class CalendarComponent implements OnInit {
 				isToday: isToday(date),
 				isThisMonth: true,
 				id: getYear(date).toString() + getDayOfYear(date).toString(),
+				day: date.getDate(),
 				month: Month.Current
 			});
 		});
@@ -107,6 +113,7 @@ export class CalendarComponent implements OnInit {
 		this.calendar.forEach((item) => {
 				if (item.id === id) {
 					item.isSelected = true;
+					this.selectedDate = item.date;
 				} else {
 					item.isSelected = false;
 				}
@@ -139,9 +146,13 @@ export class CalendarComponent implements OnInit {
 		return Math.floor(weekNumber);
 	}
 
-	setButtonText() {
+	setButtonText(): void {
 		const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 		this.buttonText = `${months[this.date.getMonth()]} ${this.date.getFullYear()}`;
+	}
+
+	yearButtonClicked(): void {
+		this.yearButtonClick.emit(CurrentView.MultiYear);
 	}
 
 	public getCssClass(day: Day): string {

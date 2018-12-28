@@ -1,3 +1,13 @@
-<div class="container">
-	<app-calendar [date]="date"></app-calendar>
+<div class="container" [ngSwitch]="currentView">
+	<app-month-view 
+		*ngSwitchCase="'month'"
+		[date]="date"
+		(yearButtonClick)="changeView($event)">
+	</app-month-view>
+	<app-multi-year-view 
+		*ngSwitchCase="'multi-year'">
+	</app-multi-year-view>
+	<app-year-view
+		*ngSwitchCase="'year-view'">
+	</app-year-view>
 </div>

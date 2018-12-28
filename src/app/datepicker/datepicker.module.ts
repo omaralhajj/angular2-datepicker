@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
-import { CalendarComponent } from './calendar/calendar.component';
 import { CommonModule } from '@angular/common';
-import { MatIconModule, MatButtonModule, MatDividerModule } from '@angular/material';
 import { DatepickerComponent } from './datepicker.component';
-import { CalendarModule } from './calendar/calendar.module';
+import { MultiYearViewModule } from './multi-year-view/multi-year-view.module';
+import { YearViewModule } from './year-view/year-view.module';
+import { MonthViewModule } from './month-view/month-view.module';
 
 @NgModule({
 	declarations: [
@@ -11,7 +11,9 @@ import { CalendarModule } from './calendar/calendar.module';
 	],
 	imports: [
 		CommonModule,
-		CalendarModule
+		MonthViewModule,
+		MultiYearViewModule,
+		YearViewModule
 	],
 	exports: [DatepickerComponent]
 })

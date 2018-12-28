@@ -1,3 +1,5 @@
+import { Month } from './enums';
+
 export class Day {
 	date: Date;
 	dateString: String;
@@ -15,10 +17,4 @@ export class Day {
 			Object.assign(this, options);
 		}
 	}
-}
-
-export enum Month {
-	Previous = 'previous',
-	Current = 'current',
-	Next = 'next'
 }
