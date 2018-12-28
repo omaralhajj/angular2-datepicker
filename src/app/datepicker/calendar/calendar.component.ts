@@ -38,8 +38,7 @@ export class CalendarComponent implements OnInit {
 	public calendar = new Array<Day>();
 	public selectedDateId: string;
 	public buttonText: string;
-	public weekNumbers = new Array<string>();
-	public open = true;
+	public weekNumbers = new Array<number>();
 
 	weekName = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
@@ -116,7 +115,7 @@ export class CalendarComponent implements OnInit {
 	}
 
 	close(): void {
-		this.open = !this.open;
+		// close
 	}
 
 	nextMonth(): void {
@@ -129,7 +128,7 @@ export class CalendarComponent implements OnInit {
 		this.update();
 	}
 
-	getWeekNumber(date: Date): string {
+	getWeekNumber(date: Date): number {
 		const dayOfYear = getDayOfYear(date);
 		const dayOfWeek = getDay(date);
 		const dayOfWeekJanFirst = getDay(startOfYear(date));
@@ -137,7 +136,7 @@ export class CalendarComponent implements OnInit {
 		if (dayOfWeek < dayOfWeekJanFirst) {
 			weekNumber += 1;
 		}
-		return weekNumber.toFixed(0);
+		return Math.floor(weekNumber);
 	}
 
 	setButtonText() {
