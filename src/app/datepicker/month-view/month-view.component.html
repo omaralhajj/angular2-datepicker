@@ -1,6 +1,6 @@
 <div class="calendar-header">
 	<div class="controls">
-		<button mat-button (click)="yearButtonClicked()">
+		<button mat-button (click)="buttonClicked(currentView.MultiYear)">
 			{{buttonText}}
 			<mat-icon>arrow_drop_down</mat-icon>
 		</button>
@@ -21,7 +21,7 @@
 		{{name}}
 	</div>
 </div>
-<mat-divider class="header-divider"></mat-divider>
+<mat-divider></mat-divider>
 <div class="calendar-container">
 	<div class="main-calendar">
 		<div class="week-numbers">
@@ -31,7 +31,7 @@
 		</div>
 		<div class="month-view">
 			<div class="day-container" *ngFor="let day of calendar">
-				<div [ngClass]="getCssClass(day)" (click)="select(day.id)">
+				<div [ngClass]="getCssClass(day)" (click)="selectDate(day.id)">
 					{{day.day}}
 				</div>
 			</div>

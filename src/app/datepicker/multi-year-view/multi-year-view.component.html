@@ -1,3 +1,23 @@
-<p>
-  multi-year-view works!
-</p>
+<div class="year-view-header">
+	<div class="controls">
+		<button mat-button (click)="buttonClicked(currentView.Month)">
+			{{buttonText}}
+			<mat-icon>arrow_drop_up</mat-icon>
+		</button>
+		<div class="spacer"></div>
+		<button mat-icon-button (click)="previousPage()">
+			<mat-icon>chevron_left</mat-icon>
+		</button>
+		<button mat-icon-button (click)="nextPage()">
+			<mat-icon>chevron_right</mat-icon>
+		</button>
+	</div>
+</div>
+<mat-divider class="divider"></mat-divider>
+<div class="year-view-container">
+	<div class="year-container" *ngFor="let year of years">
+		<div [ngClass]="getCssClass(year)" (click)="selectYear(year.id)">
+			{{year.year}}
+		</div>
+	</div>
+</div>

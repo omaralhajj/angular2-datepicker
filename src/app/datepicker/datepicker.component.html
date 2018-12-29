@@ -2,10 +2,15 @@
 	<app-month-view 
 		*ngSwitchCase="'month'"
 		[date]="date"
-		(yearButtonClick)="changeView($event)">
+		(buttonClick)="changeView($event)"
+		(dateSelected)="selectedDayId = $event"
+		[selectedDayId]="selectedDayId">
 	</app-month-view>
 	<app-multi-year-view 
-		*ngSwitchCase="'multi-year'">
+		*ngSwitchCase="'multi-year'"
+		(buttonClick)="changeView($event)"
+		(yearSelected)="selectedYearId = $event"
+		[selectedYearId]="selectedYearId">
 	</app-multi-year-view>
 	<app-year-view
 		*ngSwitchCase="'year-view'">

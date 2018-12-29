@@ -17,15 +17,21 @@ import {
 import { DatepickerOptions } from '../../models/datepicker-options';
 import { Day } from '../../models/day';
 import { Month, CurrentView } from 'src/app/models/enums';
+import { BaseViewComponent } from '../base-view/base-view.component';
 
 @Component({
 	selector: 'app-month-view',
 	templateUrl: './month-view.component.html',
 	styleUrls: ['./month-view.component.less']
 })
-export class MonthViewComponent implements OnInit {
+export class MonthViewComponent extends BaseViewComponent implements OnInit {
 	private internalDate: Date;
+
+	public weekName = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+	public weekNumbers = new Array<number>();
+	public calendar = new Array<Day>();
 	public selectedDate: Date;
+	public buttonText: string;
 
 	@Input()
 	public get date() {
@@ -36,17 +42,14 @@ export class MonthViewComponent implements OnInit {
 	}
 
 	@Input() options = new DatepickerOptions();
+	@Input() selectedDayId: string;
 
-	public calendar = new Array<Day>();
-	public selectedDateId: string;
-	public buttonText: string;
-	public weekNumbers = new Array<number>();
+	@Output() dateSelected = new EventEmitter();
+	@Output() buttonClick = new EventEmitter();
 
-	weekName = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-
-	@Output() yearButtonClick = new EventEmitter();
-
-	constructor() { }
+	constructor() {
+		super();
+	}
 
 	ngOnInit() {
 		this.update();
@@ -74,6 +77,18 @@ export class MonthViewComponent implements OnInit {
 		}
 		prevMonth.reverse();
 
+		let currentMonth = [];
+		currentMonth = eachDay(start, end).map((date) => {
+			return new Day({
+				date: date,
+				isToday: isToday(date),
+				isThisMonth: true,
+				id: getYear(date).toString() + getDayOfYear(date).toString(),
+				day: date.getDate(),
+				month: Month.Current
+			});
+		});
+
 		const nextMonth = [];
 		for (let i = 1; i < 7 - getDay(end); i++) {
 			const date = addDays(end, i);
@@ -87,21 +102,9 @@ export class MonthViewComponent implements OnInit {
 			}));
 		}
 
-		let currentMonth = [];
-		currentMonth = eachDay(start, end).map((date) => {
-			return new Day({
-				date: date,
-				isToday: isToday(date),
-				isThisMonth: true,
-				id: getYear(date).toString() + getDayOfYear(date).toString(),
-				day: date.getDate(),
-				month: Month.Current
-			});
-		});
-
 		this.calendar = prevMonth.concat(currentMonth).concat(nextMonth);
 
-		this.select(this.selectedDateId);
+		this.selectDate(this.selectedDayId);
 
 		for (let i = 0; i < (this.calendar.length / 7); i++) {
 			const week = addWeeks(start, i);
@@ -109,20 +112,17 @@ export class MonthViewComponent implements OnInit {
 		}
 	}
 
-	public select(id: string): void {
+	public selectDate(id: string): void {
 		this.calendar.forEach((item) => {
 				if (item.id === id) {
 					item.isSelected = true;
 					this.selectedDate = item.date;
+					this.dateSelected.emit(id);
 				} else {
 					item.isSelected = false;
 				}
 			});
-		this.selectedDateId = id;
-	}
-
-	close(): void {
-		// close
+		this.selectedDayId = id;
 	}
 
 	nextMonth(): void {
@@ -149,10 +149,6 @@ export class MonthViewComponent implements OnInit {
 	setButtonText(): void {
 		const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 		this.buttonText = `${months[this.date.getMonth()]} ${this.date.getFullYear()}`;
-	}
-
-	yearButtonClicked(): void {
-		this.yearButtonClick.emit(CurrentView.MultiYear);
 	}
 
 	public getCssClass(day: Day): string {
