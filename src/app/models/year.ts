@@ -8,7 +8,7 @@ export class Year {
 	disabled: boolean;
 	id: string;
 
-	constructor(options: Partial<Year>) {
+	constructor(options?: Partial<Year>) {
 		if (options) {
 			Object.assign(this, options);
 		}

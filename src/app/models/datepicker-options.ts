@@ -1,8 +1,25 @@
+import { WeekDayLabels } from './week-day-labels';
+
 export class DatepickerOptions {
+	private _startDayOfWeek = 0; // 0-6, sunday-saturday
+	get startDayOfWeek() {
+		return this._startDayOfWeek;
+	}
+	set startDayOfWeek(value) {
+		if (value > 6) {
+			this._startDayOfWeek = 0;
+		} else {
+			this._startDayOfWeek = value;
+		}
+	}
 	enableDateRange = false;
-	showTodayButton = true;
 	minYear: number | string = 1900;
 	maxYear: number | string = 2099;
+	minDate: Date;
+	maxDate: Date;
+	weekDayLabels = new WeekDayLabels();
+	weekLabel = 'Week';
+	monthLocale: any;
 	// dateFormat = 'dd-mm-yyyy';
 
 	constructor(options?: Partial<DatepickerOptions>) {

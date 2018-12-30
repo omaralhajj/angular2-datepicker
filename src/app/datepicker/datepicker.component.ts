@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { DatepickerOptions } from '../models/datepicker-options';
 
 @Component({
 	selector: 'app-datepicker',
@@ -21,6 +22,8 @@ export class DatepickerComponent implements OnInit {
 	public set date(value) {
 		this.internalDate = value;
 	}
+
+	@Input() datepickerOptions = new DatepickerOptions();
 
 	ngOnInit() {
 	}

@@ -27,7 +27,7 @@ import { BaseViewComponent } from '../base-view/base-view.component';
 export class MonthViewComponent extends BaseViewComponent implements OnInit {
 	private internalDate: Date;
 
-	public weekName = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+	public weekDayLabels: Array<string>;
 	public weekNumbers = new Array<number>();
 	public calendar = new Array<Day>();
 	public selectedDate: Date;
@@ -41,7 +41,7 @@ export class MonthViewComponent extends BaseViewComponent implements OnInit {
 		this.internalDate = value;
 	}
 
-	@Input() options = new DatepickerOptions();
+	@Input() options: DatepickerOptions;
 	@Input() selectedDayId: string;
 
 	@Output() dateSelected = new EventEmitter();
@@ -52,19 +52,21 @@ export class MonthViewComponent extends BaseViewComponent implements OnInit {
 	}
 
 	ngOnInit() {
+		this.weekDayLabels = this.updateWeekLabelOrder();
 		this.update();
 	}
 
-	public update(): void {
+	update(): void {
 		this.weekNumbers.length = 0;
-
+		this.calendar.length = 0;
 		this.setButtonText();
 
 		const start = startOfMonth(this.date);
 		const end = endOfMonth(this.date);
 
 		const prevMonth = [];
-		for (let i = 1; i <= getDay(start); i++) {
+		const prevMonthLimit = getDay(start) - this.options.startDayOfWeek;
+		for (let i = 1; i <= prevMonthLimit; i++) {
 			const date = subDays(start, i);
 			prevMonth.push(new Day({
 				date: date,
@@ -77,8 +79,7 @@ export class MonthViewComponent extends BaseViewComponent implements OnInit {
 		}
 		prevMonth.reverse();
 
-		let currentMonth = [];
-		currentMonth = eachDay(start, end).map((date) => {
+		const currentMonth = eachDay(start, end).map((date) => {
 			return new Day({
 				date: date,
 				isToday: isToday(date),
@@ -90,7 +91,8 @@ export class MonthViewComponent extends BaseViewComponent implements OnInit {
 		});
 
 		const nextMonth = [];
-		for (let i = 1; i < 7 - getDay(end); i++) {
+		const nextMonthLimit = 7 - (getDay(end) - this.options.startDayOfWeek);
+		for (let i = 1; i < nextMonthLimit; i++) {
 			const date = addDays(end, i);
 			nextMonth.push(new Day({
 				date: date,
@@ -112,7 +114,7 @@ export class MonthViewComponent extends BaseViewComponent implements OnInit {
 		}
 	}
 
-	public selectDate(id: string): void {
+	selectDate(id: string): void {
 		this.calendar.forEach((item) => {
 				if (item.id === id) {
 					item.isSelected = true;
@@ -122,7 +124,15 @@ export class MonthViewComponent extends BaseViewComponent implements OnInit {
 					item.isSelected = false;
 				}
 			});
-		this.selectedDayId = id;
+	}
+
+	// Update week label order based on the start day of the week
+	updateWeekLabelOrder(): Array<string> {
+		const startDayOfWeek = this.options.startDayOfWeek;
+		const weekLabels = Object.values(this.options.weekDayLabels);
+		const arr1 = weekLabels.slice(0, startDayOfWeek);
+		const arr2 = weekLabels.slice(startDayOfWeek);
+		return arr2.concat(arr1);
 	}
 
 	nextMonth(): void {
@@ -151,7 +161,7 @@ export class MonthViewComponent extends BaseViewComponent implements OnInit {
 		this.buttonText = `${months[this.date.getMonth()]} ${this.date.getFullYear()}`;
 	}
 
-	public getCssClass(day: Day): string {
+	getCssClass(day: Day): string {
 		if (day.isSelected && day.isToday) {
 			return 'day today-selected';
 		}

@@ -4,7 +4,8 @@
 		[date]="date"
 		(buttonClick)="changeView($event)"
 		(dateSelected)="selectedDayId = $event"
-		[selectedDayId]="selectedDayId">
+		[selectedDayId]="selectedDayId"
+		[options]="datepickerOptions">
 	</app-month-view>
 	<app-multi-year-view 
 		*ngSwitchCase="'multi-year'"

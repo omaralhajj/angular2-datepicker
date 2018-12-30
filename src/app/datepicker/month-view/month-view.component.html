@@ -15,10 +15,10 @@
 </div>
 <div class="week-header">
 	<div class="week-cell">
-		Week
+		{{options.weekLabel}}
 	</div>
-	<div class="week-cell" *ngFor="let name of weekName">
-		{{name}}
+	<div class="week-cell" *ngFor="let label of weekDayLabels">
+		{{label}}
 	</div>
 </div>
 <mat-divider></mat-divider>
