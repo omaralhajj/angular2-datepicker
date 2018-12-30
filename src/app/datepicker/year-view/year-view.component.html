@@ -1,3 +1,26 @@
-<p>
-  year-view works!
-</p>
+<div class="month-view-header">
+	<div class="controls">
+		<button mat-button (click)="buttonClicked(currentView.Month)">
+			{{buttonText}}
+			<mat-icon>arrow_drop_up</mat-icon>
+		</button>
+		<div class="spacer"></div>
+		<button mat-icon-button (click)="previousPage()">
+			<mat-icon>chevron_left</mat-icon>
+		</button>
+		<button mat-icon-button (click)="nextPage()">
+			<mat-icon>chevron_right</mat-icon>
+		</button>
+	</div>
+</div>
+<mat-divider class="divider"></mat-divider>
+<div class="label">
+	{{buttonText}}
+</div>
+<div class="month-view-container">
+	<div class="month-container" *ngFor="let month of months">
+		<div [ngClass]="getCssClass(month)" (click)="selectMonth(month.id)">
+			{{month.label}}
+		</div>
+	</div>
+</div>

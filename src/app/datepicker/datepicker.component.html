@@ -1,19 +1,29 @@
 <div class="container" [ngSwitch]="currentView">
 	<app-month-view 
 		*ngSwitchCase="'month'"
-		[date]="date"
 		(buttonClick)="changeView($event)"
-		(dateSelected)="selectedDayId = $event"
+		(dateSelected)="dateSelected($event.date, $event.dateId)"
+		(internalDateChange)="date = $event"
 		[selectedDayId]="selectedDayId"
-		[options]="datepickerOptions">
+		[options]="datepickerOptions"
+		[internalDate]="date">
 	</app-month-view>
 	<app-multi-year-view 
 		*ngSwitchCase="'multi-year'"
 		(buttonClick)="changeView($event)"
-		(yearSelected)="selectedYearId = $event"
-		[selectedYearId]="selectedYearId">
+		(yearSelected)="yearSelected($event)"
+		(internalDateChange)="date = $event"
+		[selectedYearId]="selectedYearId"
+		[options]="datepickerOptions"
+		[internalDate]="date">
 	</app-multi-year-view>
 	<app-year-view
-		*ngSwitchCase="'year-view'">
+		*ngSwitchCase="'year'"
+		(buttonClick)="changeView($event)"
+		(monthSelected)="monthSelected($event)"
+		(internalDateChange)="date = $event"
+		[selectedMonthId]="selectedMonthId"
+		[options]="datepickerOptions"
+		[internalDate]="date">
 	</app-year-view>
 </div>

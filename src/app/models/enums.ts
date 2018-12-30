@@ -1,4 +1,4 @@
-export enum Month {
+export enum _Month {
 	Previous = 'previous',
 	Current = 'current',
 	Next = 'next'

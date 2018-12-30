@@ -16,7 +16,6 @@ import {
 } from 'date-fns';
 import { DatepickerOptions } from '../../models/datepicker-options';
 import { Day } from '../../models/day';
-import { Month, CurrentView } from 'src/app/models/enums';
 import { BaseViewComponent } from '../base-view/base-view.component';
 
 @Component({
@@ -25,21 +24,11 @@ import { BaseViewComponent } from '../base-view/base-view.component';
 	styleUrls: ['./month-view.component.less']
 })
 export class MonthViewComponent extends BaseViewComponent implements OnInit {
-	private internalDate: Date;
 
 	public weekDayLabels: Array<string>;
 	public weekNumbers = new Array<number>();
 	public calendar = new Array<Day>();
-	public selectedDate: Date;
 	public buttonText: string;
-
-	@Input()
-	public get date() {
-		return this.internalDate;
-	}
-	public set date(value) {
-		this.internalDate = value;
-	}
 
 	@Input() options: DatepickerOptions;
 	@Input() selectedDayId: string;
@@ -61,8 +50,8 @@ export class MonthViewComponent extends BaseViewComponent implements OnInit {
 		this.calendar.length = 0;
 		this.setButtonText();
 
-		const start = startOfMonth(this.date);
-		const end = endOfMonth(this.date);
+		const start = startOfMonth(this.internalDate);
+		const end = endOfMonth(this.internalDate);
 
 		const prevMonth = [];
 		const prevMonthLimit = getDay(start) - this.options.startDayOfWeek;
@@ -74,7 +63,7 @@ export class MonthViewComponent extends BaseViewComponent implements OnInit {
 				isThisMonth: false,
 				id: getYear(date).toString() + getDayOfYear(date).toString(),
 				day: date.getDate(),
-				month: Month.Previous
+				month: date.getMonth()
 			}));
 		}
 		prevMonth.reverse();
@@ -86,7 +75,7 @@ export class MonthViewComponent extends BaseViewComponent implements OnInit {
 				isThisMonth: true,
 				id: getYear(date).toString() + getDayOfYear(date).toString(),
 				day: date.getDate(),
-				month: Month.Current
+				month: date.getMonth()
 			});
 		});
 
@@ -100,7 +89,7 @@ export class MonthViewComponent extends BaseViewComponent implements OnInit {
 				isThisMonth: false,
 				id: getYear(date).toString() + getDayOfYear(date).toString(),
 				day: date.getDate(),
-				month: Month.Next
+				month: date.getMonth()
 			}));
 		}
 
@@ -118,8 +107,8 @@ export class MonthViewComponent extends BaseViewComponent implements OnInit {
 		this.calendar.forEach((item) => {
 				if (item.id === id) {
 					item.isSelected = true;
-					this.selectedDate = item.date;
-					this.dateSelected.emit(id);
+					this.internalDate = item.date;
+					this.dateSelected.emit({date: item.date, dateId: id});
 				} else {
 					item.isSelected = false;
 				}
@@ -136,12 +125,12 @@ export class MonthViewComponent extends BaseViewComponent implements OnInit {
 	}
 
 	nextMonth(): void {
-		this.date = addMonths(this.date, 1);
+		this.internalDate = addMonths(this.internalDate, 1);
 		this.update();
 	}
 
 	previousMonth(): void {
-		this.date = subMonths(this.date, 1);
+		this.internalDate = subMonths(this.internalDate, 1);
 		this.update();
 	}
 
@@ -157,8 +146,8 @@ export class MonthViewComponent extends BaseViewComponent implements OnInit {
 	}
 
 	setButtonText(): void {
-		const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
-		this.buttonText = `${months[this.date.getMonth()]} ${this.date.getFullYear()}`;
+		const months = Object.values(this.options.monthLabels);
+		this.buttonText = `${months[this.internalDate.getMonth()]} ${this.internalDate.getFullYear()}`;
 	}
 
 	getCssClass(day: Day): string {

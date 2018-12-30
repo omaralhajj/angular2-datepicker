@@ -1,10 +1,8 @@
-import { Month } from './enums';
-
 export class Day {
 	date: Date;
 	dateString: String;
 	day: number;
-	month: Month;
+	month: number;
 	year: number;
 	isThisMonth: boolean;
 	isToday: boolean;

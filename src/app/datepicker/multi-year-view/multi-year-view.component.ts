@@ -3,6 +3,7 @@ import { CurrentView } from 'src/app/models/enums';
 import { isThisYear, addYears, subYears } from 'date-fns';
 import { Year } from 'src/app/models/year';
 import { BaseViewComponent } from '../base-view/base-view.component';
+import { DatepickerOptions } from 'src/app/models/datepicker-options';
 
 @Component({
 	selector: 'app-multi-year-view',
@@ -12,10 +13,10 @@ import { BaseViewComponent } from '../base-view/base-view.component';
 export class MultiYearViewComponent extends BaseViewComponent implements OnInit {
 
 	public years = new Array<Year>();
-	public date = new Date();
 	public buttonText: string;
 
 	@Input() selectedYearId: string;
+	@Input() options: DatepickerOptions;
 
 	@Output() yearSelected = new EventEmitter();
 
@@ -29,10 +30,11 @@ export class MultiYearViewComponent extends BaseViewComponent implements OnInit 
 
 	update(): void {
 		this.years.length = 0;
-		const startIndex = this.date.getFullYear() % 24;
+		const startIndex = this.internalDate.getFullYear() % 24;
 		for (let i = 0 - startIndex; i < 24 - startIndex; i++) {
-			const year = this.date.getFullYear() + i;
+			const year = this.internalDate.getFullYear() + i;
 			this.years.push(new Year({
+				date: this.internalDate,
 				year: year,
 				yearsToAdd: i,
 				isThisYear: isThisYear(new Date(year, 0, 1)),
@@ -61,12 +63,12 @@ export class MultiYearViewComponent extends BaseViewComponent implements OnInit 
 	}
 
 	nextPage(): void {
-		this.date = addYears(this.date, 24);
+		this.internalDate = addYears(this.internalDate, 24);
 		this.update();
 	}
 
 	previousPage(): void {
-		this.date = subYears(this.date, 24);
+		this.internalDate = subYears(this.internalDate, 24);
 		this.update();
 	}
 
@@ -74,6 +76,7 @@ export class MultiYearViewComponent extends BaseViewComponent implements OnInit 
 		this.years.forEach((item) => {
 				if (item.id === id) {
 					item.isSelected = true;
+					this.internalDate = item.date;
 					this.yearSelected.emit(id);
 				} else {
 					item.isSelected = false;

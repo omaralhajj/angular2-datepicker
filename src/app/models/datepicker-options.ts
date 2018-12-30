@@ -1,4 +1,5 @@
 import { WeekDayLabels } from './week-day-labels';
+import { MonthLabels } from './month-labels';
 
 export class DatepickerOptions {
 	private _startDayOfWeek = 0; // 0-6, sunday-saturday
@@ -18,8 +19,8 @@ export class DatepickerOptions {
 	minDate: Date;
 	maxDate: Date;
 	weekDayLabels = new WeekDayLabels();
+	monthLabels = new MonthLabels();
 	weekLabel = 'Week';
-	monthLocale: any;
 	// dateFormat = 'dd-mm-yyyy';
 
 	constructor(options?: Partial<DatepickerOptions>) {
