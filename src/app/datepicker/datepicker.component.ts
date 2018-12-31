@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { DatepickerOptions } from '../models/datepicker-options';
 import { CurrentView } from '../models/enums';
+import { getDate } from 'date-fns';
 
 @Component({
 	selector: 'app-datepicker',
@@ -13,7 +14,7 @@ export class DatepickerComponent implements OnInit {
 	public selectedMonthId: string;
 	public selectedYearId: string;
 	public selectedDayId: string;
-	public currentView = 'year';
+	public currentView = 'month';
 
 	@Input()
 	public get date() {

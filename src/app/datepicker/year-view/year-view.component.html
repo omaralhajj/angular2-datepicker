@@ -19,7 +19,7 @@
 </div>
 <div class="month-view-container">
 	<div class="month-container" *ngFor="let month of months">
-		<div [ngClass]="getCssClass(month)" (click)="selectMonth(month.id)">
+		<div [ngClass]="getCssClass(month)" (click)="selectMonth(month.id, true)">
 			{{month.label}}
 		</div>
 	</div>

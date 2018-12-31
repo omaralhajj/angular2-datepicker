@@ -16,7 +16,7 @@
 <mat-divider class="divider"></mat-divider>
 <div class="year-view-container">
 	<div class="year-container" *ngFor="let year of years">
-		<div [ngClass]="getCssClass(year)" (click)="selectYear(year.id)">
+		<div [ngClass]="getCssClass(year)" (click)="selectYear(year.id, true)">
 			{{year.year}}
 		</div>
 	</div>

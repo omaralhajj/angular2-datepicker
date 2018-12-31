@@ -30,6 +30,8 @@ export class MonthViewComponent extends BaseViewComponent implements OnInit {
 	public calendar = new Array<Day>();
 	public buttonText: string;
 
+	internalDateCopy: Date;
+
 	@Input() options: DatepickerOptions;
 	@Input() selectedDayId: string;
 
@@ -42,6 +44,7 @@ export class MonthViewComponent extends BaseViewComponent implements OnInit {
 
 	ngOnInit() {
 		this.weekDayLabels = this.updateWeekLabelOrder();
+		this.internalDateCopy = this.internalDate;
 		this.update();
 	}
 
@@ -50,8 +53,8 @@ export class MonthViewComponent extends BaseViewComponent implements OnInit {
 		this.calendar.length = 0;
 		this.setButtonText();
 
-		const start = startOfMonth(this.internalDate);
-		const end = endOfMonth(this.internalDate);
+		const start = startOfMonth(this.internalDateCopy);
+		const end = endOfMonth(this.internalDateCopy);
 
 		const prevMonth = [];
 		const prevMonthLimit = getDay(start) - this.options.startDayOfWeek;
@@ -125,12 +128,12 @@ export class MonthViewComponent extends BaseViewComponent implements OnInit {
 	}
 
 	nextMonth(): void {
-		this.internalDate = addMonths(this.internalDate, 1);
+		this.internalDateCopy = addMonths(this.internalDateCopy, 1);
 		this.update();
 	}
 
 	previousMonth(): void {
-		this.internalDate = subMonths(this.internalDate, 1);
+		this.internalDateCopy = subMonths(this.internalDateCopy, 1);
 		this.update();
 	}
 
@@ -147,12 +150,16 @@ export class MonthViewComponent extends BaseViewComponent implements OnInit {
 
 	setButtonText(): void {
 		const months = Object.values(this.options.monthLabels);
-		this.buttonText = `${months[this.internalDate.getMonth()]} ${this.internalDate.getFullYear()}`;
+		this.buttonText = `${months[this.internalDateCopy.getMonth()]} ${this.internalDateCopy.getFullYear()}`;
 	}
 
 	getCssClass(day: Day): string {
 		if (day.isSelected && day.isToday) {
 			return 'day today-selected';
+		}
+
+		if (day.isToday && !day.isThisMonth) {
+			return 'day today not-in-month';
 		}
 
 		if (day.isSelected) {

@@ -1,5 +1,4 @@
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
-import { CurrentView } from 'src/app/models/enums';
 import { isThisYear, addYears, subYears } from 'date-fns';
 import { Year } from 'src/app/models/year';
 import { BaseViewComponent } from '../base-view/base-view.component';
@@ -11,9 +10,12 @@ import { DatepickerOptions } from 'src/app/models/datepicker-options';
 	styleUrls: ['./multi-year-view.component.less']
 })
 export class MultiYearViewComponent extends BaseViewComponent implements OnInit {
+	// Copy of internal date since we don't want to change internalDate unless a date is explicitly selected
+	private internalDateCopy: Date;
 
 	public years = new Array<Year>();
 	public buttonText: string;
+
 
 	@Input() selectedYearId: string;
 	@Input() options: DatepickerOptions;
@@ -25,16 +27,17 @@ export class MultiYearViewComponent extends BaseViewComponent implements OnInit 
 	}
 
 	ngOnInit() {
+		this.internalDateCopy = this.internalDate;
 		this.update();
 	}
 
 	update(): void {
 		this.years.length = 0;
-		const startIndex = this.internalDate.getFullYear() % 24;
+		const startIndex = this.internalDateCopy.getFullYear() % 24;
 		for (let i = 0 - startIndex; i < 24 - startIndex; i++) {
-			const year = this.internalDate.getFullYear() + i;
+			const year = this.internalDateCopy.getFullYear() + i;
 			this.years.push(new Year({
-				date: this.internalDate,
+				date: addYears(this.internalDateCopy, i),
 				year: year,
 				yearsToAdd: i,
 				isThisYear: isThisYear(new Date(year, 0, 1)),
@@ -63,24 +66,28 @@ export class MultiYearViewComponent extends BaseViewComponent implements OnInit 
 	}
 
 	nextPage(): void {
-		this.internalDate = addYears(this.internalDate, 24);
+		this.internalDateCopy = addYears(this.internalDateCopy, 24);
 		this.update();
 	}
 
 	previousPage(): void {
-		this.internalDate = subYears(this.internalDate, 24);
+		this.internalDateCopy = subYears(this.internalDateCopy, 24);
 		this.update();
 	}
 
-	public selectYear(id: string): void {
+	public selectYear(id: string, emitChange = false): void {
 		this.years.forEach((item) => {
 				if (item.id === id) {
 					item.isSelected = true;
 					this.internalDate = item.date;
-					this.yearSelected.emit(id);
 				} else {
 					item.isSelected = false;
 				}
 			});
+
+		// Because we only want to emit a change when we actually click on a date, and not everytime update() is called
+		if (emitChange) {
+			this.yearSelected.emit(id);
+		}
 	}
 }

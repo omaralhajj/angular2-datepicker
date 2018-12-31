@@ -16,8 +16,10 @@ export class YearViewComponent extends BaseViewComponent implements OnInit {
 	public currentView = CurrentView;
 	public buttonText: number;
 
+	public internalDateCopy: Date;
+
 	@Input() options: DatepickerOptions;
-	@Input() selectedMonthId: DatepickerOptions;
+	@Input() selectedMonthId: string;
 
 	@Output() monthSelected = new EventEmitter();
 
@@ -26,6 +28,7 @@ export class YearViewComponent extends BaseViewComponent implements OnInit {
 	}
 
 	ngOnInit() {
+		this.internalDateCopy = this.internalDate;
 		this.update();
 	}
 
@@ -33,37 +36,44 @@ export class YearViewComponent extends BaseViewComponent implements OnInit {
 		this.months.length = 0;
 		const labels = Object.values(this.options.monthLabels);
 		for (let i = 0; i <= 11; i++) {
+			const date = new Date(this.internalDateCopy.getFullYear(), i, 2);
 			this.months.push(new Month({
-				date: this.internalDate,
+				date: date,
 				month: i,
 				label: labels[i],
-				isThisMonth: isThisMonth(new Date(this.internalDate.getFullYear(), i, 1)),
+				isThisMonth: isThisMonth(date),
 				isSelected: false,
-				id: this.internalDate.getFullYear().toString() + i.toString()
+				id: this.internalDateCopy.getFullYear().toString() + i.toString()
 			}));
 		}
-		this.buttonText = this.internalDate.getFullYear();
+		this.buttonText = this.internalDateCopy.getFullYear();
+
+		this.selectMonth(this.selectedMonthId);
 	}
 
-	public selectMonth(id: string): void {
+	public selectMonth(id: string, emitChange = false): void {
 		this.months.forEach((item) => {
 				if (item.id === id) {
 					item.isSelected = true;
 					this.internalDate = item.date;
-					this.monthSelected.emit(id);
 				} else {
 					item.isSelected = false;
 				}
 			});
+
+		// Because we only want to emit a change when we actually click on a date, and not everytime update() is called
+		if (emitChange) {
+			this.monthSelected.emit(id);
+		}
 	}
 
 	nextPage(): void {
-		this.internalDate = addYears(this.internalDate, 1);
+		this.internalDateCopy = addYears(this.internalDateCopy, 1);
 		this.update();
 	}
 
 	previousPage(): void {
-		this.internalDate = subYears(this.internalDate, 1);
+		this.internalDateCopy = subYears(this.internalDateCopy, 1);
 		this.update();
 	}
 
