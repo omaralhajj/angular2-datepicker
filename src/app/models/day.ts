@@ -1,16 +1,11 @@
-export class Day {
-	date: Date;
-	dateString: String;
-	day: number;
-	month: number;
-	year: number;
+import { BaseDate } from './base-date';
+
+export class Day extends BaseDate {
 	isThisMonth: boolean;
 	isToday: boolean;
-	isSelected: boolean;
-	disabled: boolean;
-	id: string;
 
 	constructor(options: Partial<Day>) {
+		super();
 		if (options) {
 			Object.assign(this, options);
 		}

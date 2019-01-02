@@ -1,14 +1,11 @@
-export class Year {
-	date: Date;
-	dateString: String;
-	year: number;
+import { BaseDate } from './base-date';
+
+export class Year extends BaseDate {
 	yearsToAdd: number;
-	isSelected: boolean;
 	isThisYear: boolean;
-	disabled: boolean;
-	id: string;
 
 	constructor(options?: Partial<Year>) {
+		super();
 		if (options) {
 			Object.assign(this, options);
 		}

@@ -1,7 +1,5 @@
 import { Component, Output, EventEmitter, Input } from '@angular/core';
 import { CurrentView } from 'src/app/models/enums';
-import { Day } from 'src/app/models/day';
-import { Year } from 'src/app/models/year';
 
 @Component({
 	selector: 'app-base-view',

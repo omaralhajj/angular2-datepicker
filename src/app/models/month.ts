@@ -1,13 +1,12 @@
-export class Month {
-	date: Date;
+import { BaseDate } from './base-date';
+
+export class Month extends BaseDate {
 	label: string;
-	month: number;
-	isSelected: boolean;
 	isThisMonth: boolean;
-	disabled: boolean;
-	id: string;
+
 
 	constructor(options?: Partial<Month>) {
+		super();
 		if (options) {
 			Object.assign(this, options);
 		}
