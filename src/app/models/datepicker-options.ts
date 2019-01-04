@@ -21,6 +21,9 @@ export class DatepickerOptions {
 	weekDayLabels = new WeekDayLabels();
 	monthLabels = new MonthLabels();
 	weekLabel = 'Week';
+	disabled = false;
+	open = false;
+	startAt: Date;
 	// dateFormat = 'dd-mm-yyyy';
 
 	constructor(options?: Partial<DatepickerOptions>) {

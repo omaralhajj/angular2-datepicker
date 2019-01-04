@@ -1,33 +1,55 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { DatepickerOptions } from '../models/datepicker-options';
 import { CurrentView } from '../models/enums';
-import { getDate } from 'date-fns';
+import { datepickerAnimations } from './datepicker-animations';
+import { isValid } from 'date-fns';
+import { toDate } from '@angular/common/src/i18n/format_date';
 
 @Component({
 	selector: 'app-datepicker',
 	templateUrl: './datepicker.component.html',
-	styleUrls: ['./datepicker.component.less']
+	styleUrls: ['./datepicker.component.less'],
+	animations: [
+		datepickerAnimations.fadeInCalendar,
+		datepickerAnimations.transformPanel
+	]
 })
 export class DatepickerComponent implements OnInit {
-	private internalDate = new Date();
+	private _internalDate = new Date();
+	private _selectedDate = new Date();
 
 	public selectedMonthId: string;
 	public selectedYearId: string;
 	public selectedDayId: string;
-	public currentView = 'month';
 
 	@Input()
-	public get date() {
-		return this.internalDate;
+	public get internalDate() {
+		return this._internalDate;
 	}
-	public set date(value) {
-		this.internalDate = value;
+	public set internalDate(value) {
+		this._internalDate = this.sanitizeInputDate(value);
 	}
 
-	@Input() datepickerOptions = new DatepickerOptions();
-	@Input() selectedDate: Date;
+	@Input()
+	public get selectedDate() {
+		return this._selectedDate;
+	}
+	public set selectedDate(value) {
+		this._selectedDate = this.sanitizeInputDate(value);
+		this.change.emit();
+	}
+
+	@Input() options = new DatepickerOptions();
+	@Input() currentView = 'month';
+
+	@Output() opened = new EventEmitter();
+	@Output() closed = new EventEmitter();
+	@Output() change = new EventEmitter();
 
 	ngOnInit() {
+		if (this.options.open && this.options.disabled) {
+			this.options.open = false;
+		}
 	}
 
 	changeView(view: string): void {
@@ -47,5 +69,43 @@ export class DatepickerComponent implements OnInit {
 	yearSelected(yearId: string): void {
 		this.selectedYearId = yearId;
 		this.changeView(CurrentView.Year);
+	}
+
+	open(): void {
+		this.options.open = true;
+		this.opened.emit();
+	}
+
+	close(): void {
+		this.options.open = false;
+		this.closed.emit();
+	}
+
+	toggle(): void {
+		this.options.open = !this.options.open;
+		if (this.options.open) {
+			this.opened.emit();
+		} else {
+			this.closed.emit();
+		}
+	}
+
+	input(value: string, format?: string): void {
+		// for the input field
+	}
+
+	sanitizeInputDate(value: any): Date {
+		if (value instanceof Date && isValid(value)) {
+			return value;
+		}
+
+		if (typeof(value) === 'string') {
+			/*const date = toDate(value);
+			if (isValid(date)) {
+				return date;
+			}*/
+		}
+
+		// if moment.isMoment(value) return moment-to-date
 	}
 }

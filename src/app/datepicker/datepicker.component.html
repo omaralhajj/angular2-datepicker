@@ -1,29 +1,40 @@
-<div class="container" [ngSwitch]="currentView">
+<div class="backdrop" *ngIf="options.open" (click)="close()"></div>
+
+<mat-form-field>
+	<input matInput [value]="selectedDate.toDateString()" [disabled]="options.disabled" (click)="open()">
+	<button mat-button matSuffix mat-icon-button [disabled]="options.disabled" (click)="toggle()">
+	  <mat-icon>event</mat-icon>
+	</button>
+ </mat-form-field>
+ 
+<div @fadeInCalendar *ngIf="options.open" class="container" [ngSwitch]="currentView">
 	<app-month-view 
 		*ngSwitchCase="'month'"
 		(buttonClick)="changeView($event)"
 		(dateSelected)="dateSelected($event.date, $event.dateId)"
-		(internalDateChange)="date = $event"
+		(internalDateChange)="internalDate = $event"
 		[selectedDayId]="selectedDayId"
-		[options]="datepickerOptions"
-		[internalDate]="date">
+		[options]="options"
+		[internalDate]="internalDate">
 	</app-month-view>
+
 	<app-multi-year-view 
 		*ngSwitchCase="'multi-year'"
 		(buttonClick)="changeView($event)"
 		(yearSelected)="yearSelected($event)"
-		(internalDateChange)="date = $event"
+		(internalDateChange)="internalDate = $event"
 		[selectedYearId]="selectedYearId"
-		[options]="datepickerOptions"
-		[internalDate]="date">
+		[options]="options"
+		[internalDate]="internalDate">
 	</app-multi-year-view>
+
 	<app-year-view
 		*ngSwitchCase="'year'"
 		(buttonClick)="changeView($event)"
 		(monthSelected)="monthSelected($event)"
-		(internalDateChange)="date = $event"
+		(internalDateChange)="internalDate = $event"
 		[selectedMonthId]="selectedMonthId"
-		[options]="datepickerOptions"
-		[internalDate]="date">
+		[options]="options"
+		[internalDate]="internalDate">
 	</app-year-view>
 </div>

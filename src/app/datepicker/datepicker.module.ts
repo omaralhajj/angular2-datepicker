@@ -4,6 +4,8 @@ import { DatepickerComponent } from './datepicker.component';
 import { MultiYearViewModule } from './multi-year-view/multi-year-view.module';
 import { YearViewModule } from './year-view/year-view.module';
 import { MonthViewModule } from './month-view/month-view.module';
+import { MatInputModule, MatIconModule, MatFormFieldModule, MatButtonModule } from '@angular/material';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
 	declarations: [
@@ -13,7 +15,12 @@ import { MonthViewModule } from './month-view/month-view.module';
 		CommonModule,
 		MonthViewModule,
 		MultiYearViewModule,
-		YearViewModule
+		YearViewModule,
+		MatInputModule,
+		MatIconModule,
+		MatButtonModule,
+		MatFormFieldModule,
+		BrowserAnimationsModule
 	],
 	exports: [DatepickerComponent]
 })
