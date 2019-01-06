@@ -2,8 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { DatepickerOptions } from '../models/datepicker-options';
 import { CurrentView } from '../models/enums';
 import { datepickerAnimations } from './datepicker-animations';
-import { isValid } from 'date-fns';
-import { toDate } from '@angular/common/src/i18n/format_date';
+import { isValid, getDayOfYear, getYear, getMonth } from 'date-fns';
 
 @Component({
 	selector: 'app-datepicker',
@@ -22,7 +21,6 @@ export class DatepickerComponent implements OnInit {
 	public selectedYearId: string;
 	public selectedDayId: string;
 
-	@Input()
 	public get internalDate() {
 		return this._internalDate;
 	}
@@ -36,7 +34,7 @@ export class DatepickerComponent implements OnInit {
 	}
 	public set selectedDate(value) {
 		this._selectedDate = this.sanitizeInputDate(value);
-		this.change.emit();
+		this.change.emit(this._selectedDate);
 	}
 
 	@Input() options = new DatepickerOptions();
