@@ -25,7 +25,7 @@ export class DatepickerComponent implements OnInit {
 		return this._internalDate;
 	}
 	public set internalDate(value) {
-		this._internalDate = this.sanitizeInputDate(value);
+		this._internalDate = this.parse(value);
 	}
 
 	@Input()
@@ -33,7 +33,7 @@ export class DatepickerComponent implements OnInit {
 		return this._selectedDate;
 	}
 	public set selectedDate(value) {
-		this._selectedDate = this.sanitizeInputDate(value);
+		this._selectedDate = this.parse(value);
 		this.change.emit(this._selectedDate);
 	}
 
@@ -57,6 +57,7 @@ export class DatepickerComponent implements OnInit {
 	dateSelected(date: Date, dateId: string): void {
 		this.selectedDayId = dateId;
 		this.selectedDate = date;
+		this.close();
 	}
 
 	monthSelected(monthId: string): void {
@@ -92,7 +93,7 @@ export class DatepickerComponent implements OnInit {
 		// for the input field
 	}
 
-	sanitizeInputDate(value: any): Date {
+	parse(value: any): Date {
 		if (value instanceof Date && isValid(value)) {
 			return value;
 		}

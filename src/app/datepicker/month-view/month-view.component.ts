@@ -106,16 +106,20 @@ export class MonthViewComponent extends BaseViewComponent implements OnInit {
 		}
 	}
 
-	selectDate(id: string): void {
+	selectDate(id: string, emitChanges = false): void {
 		this.calendar.forEach((item) => {
 				if (item.id === id) {
 					item.isSelected = true;
 					this.internalDate = item.date;
-					this.dateSelected.emit({date: item.date, dateId: id});
 				} else {
 					item.isSelected = false;
 				}
 			});
+
+		if (emitChanges) {
+			const date = this.calendar.find((item) => item.id === id).date;
+			this.dateSelected.emit({date: date, dateId: id});
+		}
 	}
 
 	// Update week label order based on the start day of the week

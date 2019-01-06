@@ -31,7 +31,7 @@
 		</div>
 		<div class="month-view">
 			<div class="day-container" *ngFor="let day of calendar">
-				<div [ngClass]="getCssClass(day)" (click)="selectDate(day.id)">
+				<div [ngClass]="getCssClass(day)" (click)="selectDate(day.id, true)">
 					{{day.day}}
 				</div>
 			</div>
